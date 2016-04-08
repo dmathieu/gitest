@@ -3,6 +3,9 @@ package gitest
 import (
 	"fmt"
 	"io/ioutil"
+	"path"
+	"path/filepath"
+	"runtime"
 )
 
 type template struct {
@@ -10,8 +13,12 @@ type template struct {
 }
 
 func newTemplate(name string) (*template, error) {
-	folder := fmt.Sprintf("data/%s", name)
-	_, err := ioutil.ReadDir(folder)
+	_, f, _, _ := runtime.Caller(1)
+	folder, err := filepath.Abs(fmt.Sprintf("%s/data/%s", path.Dir(f), name))
+	if err != nil {
+		return nil, err
+	}
+	_, err = ioutil.ReadDir(folder)
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,7 @@ on the network
 ## Usage
 
 ```
-server, err := NewServer("basic")
+server, err := gitest.NewServer("basic")
 if err != nil {
   log.Fatalf(err)
 }
