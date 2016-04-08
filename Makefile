@@ -11,11 +11,9 @@ test: build
 	go test -race -i $(GO_PACKAGES)
 	go test -race -v $(GO_PACKAGES)
 
-tidy: goimports govet
+tidy: goimports
 	test -z "$$(goimports -l -d $(GO_FILES) | tee /dev/stderr)"
 	go vet $(GO_PACKAGES)
 
 goimports:
 	go get golang.org/x/tools/cmd/goimports
-govet:
-	go get golang.org/x/tools/cmd/vet
