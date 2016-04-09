@@ -26,8 +26,6 @@ func newTemplate(name string) (*template, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(folder)
 	return &template{folder}, nil
 }
 

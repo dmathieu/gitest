@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"os/exec"
 	"regexp"
 	"testing"
@@ -35,7 +34,6 @@ func TestCallRefs(t *testing.T) {
 	assert.Nil(t, err)
 	defer server.Close()
 
-	fmt.Fprintf(os.Stdout, "%s/%s.git", server.URL, server.ValidRepo)
 	url := fmt.Sprintf("%s/%s.git/info/refs?service=git-upload-pack", server.URL, server.ValidRepo)
 	res, err := http.Get(url)
 	assert.Nil(t, err)
@@ -123,4 +121,26 @@ func TestGitClone(t *testing.T) {
 	err = c.Run()
 	assert.Nil(t, err)
 	assert.Regexp(t, regexp.MustCompile("Cloning into"), out)
+}
+
+func TestGitPush(t *testing.T) {
+	server, err := NewServer("basic")
+	assert.Nil(t, err)
+	defer server.Close()
+
+	tempDir, err := ioutil.TempDir("", "git_repository")
+	assert.Nil(t, err)
+
+	err = exec.Command("git", "clone", fmt.Sprintf("%s/%s.git", server.URL, server.ValidRepo), tempDir).Run()
+	assert.Nil(t, err)
+
+	cmd := exec.Command("git", "commit", "-m", "test", "--allow-empty")
+	cmd.Dir = tempDir
+	err = cmd.Run()
+	assert.Nil(t, err)
+
+	cmd = exec.Command("git", "push", "--no-verify")
+	cmd.Dir = tempDir
+	cmd.Run()
+	assert.Nil(t, err)
 }
