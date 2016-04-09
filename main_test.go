@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"os/exec"
 	"regexp"
 	"testing"
@@ -136,11 +137,15 @@ func TestGitPush(t *testing.T) {
 
 	cmd := exec.Command("git", "commit", "-m", "test", "--allow-empty")
 	cmd.Dir = tempDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	assert.Nil(t, err)
 
 	cmd = exec.Command("git", "push", "--no-verify")
 	cmd.Dir = tempDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	cmd.Run()
 	assert.Nil(t, err)
 }
