@@ -1,4 +1,7 @@
 language: go
 go: 1.6
 sudo: false
+before_script:
+  - git config --global user.name "travis"
+  - git config --global user.email "travis@example.com"
 script: make travis
